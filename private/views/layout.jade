@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    title #{title} - Index
+    link(rel='stylesheet', href='/stylesheets/main.css')
+    link(rel='javascript', href='/stylesheets/main.js')
+  body
+    header
+      a(class="forkme" href="https://github.com/Coggle/coggle-issue-importer")
+        img(src="http://aral.github.com/fork-me-on-github-retina-ribbons/left-graphite@2x.png")
+      h1 #{title}
+    .container
+      .main-content
+        block content
+    footer
+      p
+       | This is a node.js example API application for 
+       a(href='http://coggle.it') Coggle
+       |  built using Express, Jade and Stylus on the 
+       a(href='http://coggle.it/developer') Coggle API
+       | , and the 
+       a(href='https://developer.github.com/v3/') Github API
+       | .
+      p
+       | Get the 
+       a(href='http://github.com/Coggle/coggle-issue-importer') source
+       | .
+       

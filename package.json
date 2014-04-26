@@ -1,0 +1,35 @@
+{
+  "name": "coggle-issue-importer",
+  "version": "0.0.0",
+  "description": "Import Github Issues into Coggle, using the Coggle and Github APIs",
+  "main": "app.js",
+  "repository":{
+    "type": "git",
+     "url": "http://github.com/Coggle/coggle-issue-importer.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "coggle",
+    "github",
+    "issues"
+  ],
+  "author": "James Crosby <autopulated@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "3.x",
+    "stylus": "*",
+    "nib": "*",
+    "jade": "*",
+    "passport-coggle-oauth2": "*"
+  },
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-jshint": "*"
+  },
+  "engines": {
+    "node": "0.10.x"
+  }
+}
