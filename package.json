@@ -15,13 +15,18 @@
     "github",
     "issues"
   ],
-  "author": "James Crosby <autopulated@gmail.com>",
+  "author": {
+    "name": "James Crosby",
+    "email": "james@coggle.it",
+    "url": "http://coggle.it/"
+  },
   "license": "MIT",
   "dependencies": {
     "express": "3.x",
     "stylus": "*",
     "nib": "*",
     "jade": "*",
+    "passport": "*",
     "passport-coggle-oauth2": "*"
   },
   "devDependencies": {
