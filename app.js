@@ -4,8 +4,6 @@ var nib      = require('nib');
 var jade     = require('jade');
 var passport = require('passport');
 var CoggleStrategy = require('passport-coggle-oauth2').OAuth2Strategy;
-// !!! FIXME: it would be good to not depend on a specific DB quite so strongly
-var mongoose = require('mongoose');
 
 // get environment variables we need:
 var port                 = Number(process.env.PORT || 5000);
