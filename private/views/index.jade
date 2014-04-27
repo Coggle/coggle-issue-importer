@@ -1,4 +1,19 @@
 extend layout
 block content
   p
-    | content will go here...
+    | This is a demo application that imports github issues into Coggle, where
+    | you can analyse them and plan work. 
+  
+  if !access_tokens || !access_tokens.coggle
+    div
+      a(href="/auth/coggle") Authorize access to Coggle
+
+  if !access_tokens || !access_tokens.github
+    div
+      a(href="/auth/github") Authorize access to Github
+
+  if access_tokens && access_tokens.coggle && access_tokens.github
+    p Awesome, you've authorized access!
+  
+  if access_tokens
+    a(href="/auth/deauth") Logout.

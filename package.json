@@ -26,8 +26,10 @@
     "stylus": "*",
     "nib": "*",
     "jade": "*",
+    "merge": "*",
     "passport": "*",
-    "passport-coggle-oauth2": "*"
+    "passport-coggle-oauth2": "*",
+    "passport-github": "*"
   },
   "devDependencies": {
     "grunt": "*",
