@@ -6,8 +6,8 @@ module.exports = function(grunt) {
       options: {
           banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> \n Copyright 2014 Coggle, except where noted. License: MIT, except where noted. */\n',
         preserveComments:'some',
-        sourceMap: true,
-        sourceMapName: 'public/<%= pkg.name %>.sourcemap',
+        sourceMap: false,
+        /*sourceMapName: 'public/<%= pkg.name %>.sourcemap',*/
         mangle:false
       },
       dist: {
@@ -27,13 +27,21 @@ module.exports = function(grunt) {
           document: true
         }
       }
+    },
+    watch: {
+      app: {
+        files: ['private/javascripts/*.js'],
+        tasks: ['combinejs']
+      }
     }
   });
 
+  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
-  grunt.registerTask('default', ['jshint', 'uglify']);
+  grunt.registerTask('combinejs', ['jshint', 'uglify']);
+  grunt.registerTask('default', ['combinejs', 'watch']);
   
 };
 

@@ -29,12 +29,14 @@
     "merge": "*",
     "passport": "*",
     "passport-coggle-oauth2": "*",
-    "passport-github": "*"
+    "passport-github": "*",
+    "github": "*"
   },
   "devDependencies": {
     "grunt": "*",
     "grunt-contrib-uglify": "*",
-    "grunt-contrib-jshint": "*"
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-watch": "*"
   },
   "engines": {
     "node": "0.10.x"

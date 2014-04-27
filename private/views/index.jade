@@ -12,8 +12,18 @@ block content
     div
       a(href="/auth/github") Authorize access to Github
 
-  if access_tokens && access_tokens.coggle && access_tokens.github
-    p Awesome, you've authorized access!
+  if github_repos
+    p Awesome, you've authorized access! Here are your github repositories:
+    if github_repos.length
+      ul.ingestlist
+        each repo in github_repos
+          li.ingestitem(fullname=repo.full_name)=repo.full_name
+    else
+      p Oh, looks like you don't have any repos of your own!
+
+    p You can also enter the owner/name of a repository to import issues from
+    input.ingestinput(type=textarea) 
   
   if access_tokens
-    a(href="/auth/deauth") Logout.
+    p
+      a(href="/auth/deauth") Logout.
