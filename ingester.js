@@ -17,9 +17,9 @@ function fillCoggleWithIssues(diagram, all_issues, callback){
   all_issues.forEach(function(issue){
     if(issue.labels.length){
       if(issue.labels[0].name in primary_label_counts)
-        primary_label_counts[issue.labels[0].name] += 1
+        primary_label_counts[issue.labels[0].name] += 1;
       else
-        primary_label_counts[issue.labels[0].name] = 1
+        primary_label_counts[issue.labels[0].name] = 1;
     }
     issue.labels.forEach(function(label){
       if(label.name in used_label_counts)
@@ -80,13 +80,15 @@ function fillCoggleWithIssues(diagram, all_issues, callback){
       used_labels,
       function(label, cb){
         var h = label_sizes[label];
+        var x_off = 0;
+        var y_off = 0;
         if(label in left_labels){
-          var y_off = left_y_offset + h/2;
-          var x_off = -xOffsetForChild(200, y_off, right_side_height);
+          y_off = left_y_offset + h/2;
+          x_off = -xOffsetForChild(200, y_off, right_side_height);
           left_y_offset += (h + label_yspace);
         }else{
-          var y_off = right_y_offset + h/2;
-          var x_off = xOffsetForChild(200, y_off, right_side_height);
+          y_off = right_y_offset + h/2;
+          x_off = xOffsetForChild(200, y_off, right_side_height);
           right_y_offset += (h + label_yspace);
         }
         root_node.addChild(label, {x:x_off, y:y_off}, function(err, node){
@@ -124,7 +126,6 @@ function fillCoggleWithIssues(diagram, all_issues, callback){
             label_offsets[primary_label.name] += issue_yspace;
           },
           function(err){
-            // !!! final step should be to re-arrange the diagram to neatify it
             callback(err, diagram.webUrl());
           }
         );
@@ -179,7 +180,7 @@ exports.ingest = function(options, callback){
       if(err)
         return callback(err);
 
-      all_issues = all_issues.concat(issues)
+      all_issues = all_issues.concat(issues);
 
       if(github.hasNextPage(issues)){
         github.getNextPage(issues, addReminingIssues);
@@ -190,4 +191,4 @@ exports.ingest = function(options, callback){
 
     addReminingIssues(err, issues);
   });
-}
+};
