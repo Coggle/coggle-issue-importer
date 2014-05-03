@@ -1,40 +1,261 @@
 var GitHubApi = require('github');
-var http      = require('http');
+var unirest   = require('unirest');
+var async     = require('async');
 
+var Coggle_Base_URL = 'http://localdev.coggle.it';
 
 function shortDate(){
   var date = new Date();
   return date.getMonth() + "/" +  date.getDate() + "/" +  date.getFullYear();
 }
 
-function createCoggleWithIssues(token, repo_name, all_issues, callback){
+var CoggleApiNode = function CoggleApiNode(coggle_api_diagram, node_resource){
+  this.diagram = coggle_api_diagram;
+  this.id      = node_resource._id;
+  this.text    = node_resource.text;
+  this.offset  = node_resource.offset;
+  this.offset  = node_resource.offset;
+
+  if('parent' in node_resource){
+    this.parent_id = node_resource.parent;
+  }
+
+  this.children = [];
+  if('children' in node_resource){
+    node_resource.children.forEach(function(child){
+      var child = new CoggleApiNode(coggle_api_diagram, child);
+      child.parent_id = this.id;
+      this.children.push_back(child);
+    });
+  }
+}
+CoggleApiNode.prototype = {
+  addChild: function addChild(text, offset, callback){
+    var self = this;
+    var body = {
+         parent: this.id,
+         offset: offset,
+           text: text
+    };
+    this.diagram.apiclient.post(
+      this.diagram.replaceId('/api/1/diagrams/:diagram/nodes'),
+      body,
+      function(err, node){
+        if(err)
+          return callback(err);
+        var api_node = new CoggleApiNode(self.diagram, node);
+        api_node.parent_id = self.id;
+        self.children.push(api_node);
+        return callback(false, api_node);
+    });
+  }
+};
+
+var CoggleApiDiagram = function CoggleApiDiagram(coggle_api, diagram_resource){
+    this.apiclient = coggle_api;
+    this.id        = diagram_resource._id;
+    this.title     = diagram_resource.title;
+}
+CoggleApiDiagram.prototype = {
+  webUrl: function webUrl(){
+    return this.replaceId(this.apiclient.baseurl+'/diagram/:diagram');
+  },
+  replaceId: function replaceId(url){
+    return url.replace(':diagram', this.id);
+  },
+  getNodes: function getNodes(callback){
+    var self = this;
+    this.apiclient.get(
+      this.replaceId('/api/1/diagrams/:diagram/nodes'),
+      function(err, body){
+        if(err)
+          return callback(new Error('failed to get diagram nodes: ' + err.message));
+        var api_nodes = [];
+        body.forEach(function(node_resource){
+          api_nodes.push(new CoggleApiNode(self, node_resource));
+        });
+        return callback(false, api_nodes);
+    });
+  }
+};
+
+
+var CoggleApi = function CoggleApi(options){
+    this.baseurl = options.base_url || 'http://localdev.coggle.it';
+    this.token   = options.token;
+}
+CoggleApi.prototype = {
+  post: function post(endpoint, body, callback){
+    unirest.post(this.baseurl + endpoint + '?access_token=' + this.token)
+      .type('json')
+      .send(body)
+      .end(function(response){
+        if(!response.ok)
+          return callback(new Error('POST ' + endpoint + ' failed:' + (response.body && response.body.details) || response.error));
+        return callback(false, response.body);
+    });
+  },
+  get: function get(endpoint, callback){
+    unirest.get(this.baseurl + endpoint + '?access_token=' + this.token)
+      .type('json')
+      .end(function(response){
+        if(!response.ok)
+          return callback(new Error('GET ' + endpoint + ' failed:' + (response.body && response.body.details) || response.error));
+        return callback(false, response.body);
+    });
+  },
+
+  createDiagram: function createCoggle(title, callback){
+    // callback should accept(error, diagram)
+    var self = this;
+    var body = {
+      title:title
+    };
+    this.post('/api/1/diagrams', body, function(err, body){
+      if(err)
+        return callback(new Error('failed to create coggle: ' + err.message));
+      return callback(false, new CoggleApiDiagram(self, body));
+    });
+  },
+};
+
+
+function xOffsetForChild(base_x_off, y_off, parent_height){
+  return base_x_off + (parent_height*0.2 / (1 + 3*(Math.abs(y_off)/(1+parent_height))));
+}
+
+function fillCoggleWithIssues(diagram, all_issues, callback){
+  var used_label_counts = {};
+  var primary_label_counts = {};
+  all_issues.forEach(function(issue){
+    if(issue.labels.length){
+      if(issue.labels[0].name in primary_label_counts)
+        primary_label_counts[issue.labels[0].name] += 1
+      else
+        primary_label_counts[issue.labels[0].name] = 1
+    }
+    issue.labels.forEach(function(label){
+      if(label.name in used_label_counts)
+        used_label_counts[label.name] += 1;
+      else
+        used_label_counts[label.name] = 1;
+    });
+  });
+  
+  var label_yspace = 80;
+  var issue_yspace = 50;
+  var used_labels = Object.keys(used_label_counts);
+  var label_nodes = {};
+  var default_label = {name:'(no label)'};
+  var label_offsets = {};
+  var label_sizes = {};
+  var total_used = 0;
+  
+  // special label for uncategorised issues
+  used_labels.forEach(function(l){
+    total_used += primary_label_counts[l] || 0;
+  });
+  used_labels.push(default_label.name);
+  primary_label_counts[default_label.name] = all_issues.length - total_used;
+
+  // calculate the size of the items assigned to each label, so that they can
+  // be vertically centered
+  used_labels.forEach(function(l){
+    if(l in primary_label_counts)
+      label_sizes[l] = issue_yspace * (primary_label_counts[l] - 1);
+    else
+      label_sizes[l] = 0;
+    label_offsets[l] = -label_sizes[l] * 0.5;
+  });
+  
+  // calculate the size of things on the left/right sides of the root item, so
+  // that we can place things relatively neatly
+  var left_side_height = 0;
+  var right_side_height = 0;
+  var left_labels = {};
+  for(var i = 0; i < used_labels.length; i++){
+    var l = used_labels[i] || 0;
+    if(i % 2){
+      left_labels[l] = true;
+      left_side_height += label_sizes[l] + label_yspace;
+    }else{
+      right_side_height += label_sizes[l] + label_yspace;
+    }
+  }
+
+  diagram.getNodes(function(err, nodes){
+    var root_node = nodes[0];
+  
+    var left_y_offset  = -left_side_height / 2;
+    var right_y_offset = -right_side_height / 2;
+    // add first-level branches for each label
+    async.map(
+      used_labels,
+      function(label, cb){
+        var h = label_sizes[label];
+        if(label in left_labels){
+          var y_off = left_y_offset + h/2;
+          var x_off = -xOffsetForChild(200, y_off, right_side_height);
+          left_y_offset += (h + label_yspace);
+        }else{
+          var y_off = right_y_offset + h/2;
+          var x_off = xOffsetForChild(200, y_off, right_side_height);
+          right_y_offset += (h + label_yspace);
+        }
+        root_node.addChild(label, {x:x_off, y:y_off}, function(err, node){
+          label_nodes[label] = node;
+          cb(err, node);
+        });
+      },
+      function(err, results){
+        if(err)
+          return callback(err, diagram.webUrl());
+        // add the issues tagged with each label to each label
+        async.each(
+          all_issues,
+          function(issue, cb){
+            var primary_label = issue.labels.length? issue.labels[0] : default_label;
+            var other_labels  = issue.labels.slice(1);
+            var text = '###[' + issue.title + '](' + issue.html_url + ')\n' + 
+                       'assignee: ' + ((issue.assignee && issue.assignee.login) || '**unassigned**') +
+                       ' created: ' + issue.created_at;
+            if(other_labels.length){
+              text += '\nalso tagged:';
+            }
+            other_labels.forEach(function(l){
+              text += ' [#'+l.name+']('+'#'+l.name+')';
+            });
+            var y_off = label_offsets[primary_label.name];
+            var x_off = xOffsetForChild(150, y_off, label_sizes[primary_label.name]);
+            label_nodes[primary_label.name].addChild(
+              text,
+              {x: x_off, y: y_off},
+              function(err, node){
+                cb(err);
+              }
+            );
+            label_offsets[primary_label.name] += issue_yspace;
+          },
+          function(err){
+            // !!! final step should be to re-arrange the diagram to neatify it
+            callback(err, diagram.webUrl());
+          }
+        );
+      }
+    );
+  });
+}
+
+function createCoggleWithIssues(coggle, repo_name, all_issues, callback){
   console.log('create coggle for ', repo_name, ' with', all_issues.length, 'issues');
 
-  // create a new Coggle:
-  var body = JSON.stringify({
-    title:"Imported issues for \n[" + repo_name + "](http://github.com/"+repo_name+")\n " + shortDate()
+  coggle.createDiagram(
+    "Imported issues for \n[" + repo_name + "](http://github.com/"+repo_name+")\n " + shortDate(),
+    function(err, diagram){
+      fillCoggleWithIssues(diagram, all_issues, callback);
   });
-  var req = http.request({
-       host:'localdev.coggle.it',
-       port:80,
-       path:'/api/1/diagrams?access_token=' + token,
-     method:'POST',
-    headers:{
-        'Content-Type': 'application/json',
-        'Content-Length': body.length
-      }
-  }, function(res){
-    console.log('create coggle, response:', res);
-    callback(new Error('todo...'));
-  });
-
-  req.on('error', function(err){
-    callback(new Error('failed to create coggle'));
-  });
-
-  req.write(body);
-  req.end();
 }
+
 
 
 exports.ingest = function(options, callback){
@@ -55,6 +276,11 @@ exports.ingest = function(options, callback){
      type: "oauth",
     token: access_tokens.github
   });
+
+  var coggle = new CoggleApi({
+    token:access_tokens.coggle
+  });
+
   github.issues.repoIssues({user:owner, repo:repo, state:'open', per_page:100}, function(err, issues){
     if(err)
       return callback(err);
@@ -71,7 +297,7 @@ exports.ingest = function(options, callback){
       if(github.hasNextPage(issues)){
         github.getNextPage(issues, addReminingIssues);
       }else{
-        createCoggleWithIssues(access_tokens.coggle, options.full_repo_name, all_issues, callback);
+        createCoggleWithIssues(coggle, options.full_repo_name, all_issues, callback);
       }
     }
 

@@ -11,6 +11,9 @@ block content
   if !access_tokens || !access_tokens.github
     div
       a(href="/auth/github") Authorize access to Github
+  
+  if error
+    p There was an error accessing your data: #{error}
 
   if github_repos
     p Awesome, you've authorized access! Here are your github repositories:

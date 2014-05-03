@@ -79,7 +79,7 @@ passport.use(new CoggleStrategy({
           callbackURL: protocol+"://"+host+"/auth/coggle/callback"
   },
   function(req, accessToken, refreshToken, profile, done) {
-    console.log("got authed coggle user:", profile, accessToken, refreshToken);
+    //console.log("got authed coggle user:", profile, accessToken, refreshToken);
     
     // save the access token in the session info, merging with any existing
     // access tokens
@@ -100,7 +100,7 @@ passport.use(new GitHubStrategy({
           callbackURL: protocol+"://"+host+"/auth/github/callback"
   },
   function(req, accessToken, refreshToken, profile, done) {
-    console.log("got authed github user:", profile, accessToken, refreshToken);
+    //console.log("got authed github user:", profile, accessToken, refreshToken);
     
     // save the access token in the session info, merging with any existing
     // access tokens
@@ -133,13 +133,17 @@ app.get('/', function(req, res){
       token: req.session.access_tokens.github
     });
     github.repos.getAll({type:'owner'}, function(err, result){
+      if(err)
+        console.log('Github API error', err);
       res.render('index', {
                title: 'Coggle Issue Importer',
        access_tokens: req.session.access_tokens,
-        github_repos: result
+        github_repos: result || [],
+               error: err
       });
     });
   }else{
+    console.log("user not logged in", req.session.access_tokens);
     // if we don't have all the access tokens yet, then just render without
     // doing any github requests
     res.render('index', {

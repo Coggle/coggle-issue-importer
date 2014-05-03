@@ -30,7 +30,9 @@
     "passport": "*",
     "passport-coggle-oauth2": "*",
     "passport-github": "*",
-    "github": "*"
+    "github": "*",
+    "unirest": "*",
+    "async": "*"
   },
   "devDependencies": {
     "grunt": "*",

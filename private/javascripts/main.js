@@ -23,7 +23,7 @@ $(document).ready(function(){
         return fail(data.details);
       console.log("success:", data, textStatus);
       $(replace_element_with_result).replaceWith(
-        $('<div>', {text:'success!'})
+        $('<div>', {html:'<a href="'+data.url+'">Coggle created</a>'})
       );
     });
   }
