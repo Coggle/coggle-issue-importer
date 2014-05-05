@@ -37,11 +37,10 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-jsjsdoc');
 
-  grunt.registerTask('combinejs', ['jshint', 'uglify']);
-  grunt.registerTask('default', ['combinejs', 'watch']);
+  grunt.registerTask('default', ['combinejs', 'jsjsdoc', 'watch']);
   
 };
 
