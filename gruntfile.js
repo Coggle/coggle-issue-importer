@@ -31,16 +31,17 @@ module.exports = function(grunt) {
     watch: {
       app: {
         files: ['private/javascripts/*.js'],
-        tasks: ['combinejs']
+        tasks: ['default']
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-jsjsdoc');
 
-  grunt.registerTask('default', ['combinejs', 'jsjsdoc', 'watch']);
+  grunt.registerTask('default', ['uglify', 'jshint', 'watch']);
   
 };
 
