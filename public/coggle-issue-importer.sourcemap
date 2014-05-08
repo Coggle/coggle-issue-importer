@@ -1,0 +1,1 @@
+{"version":3,"file":"main.js","sources":["../private/javascripts/main.js"],"names":["$","document","ready","on","console","log","this","attr"],"mappings":";;;AAAAA,EAAEC,UAAUC,MAAM,WAEhBF,EAAE,eAAeG,GAAG,QAAS,WAC3BC,QAAQC,IAAI,OAAQL,EAAEM,MAAMC,KAAK,YAAa"}
