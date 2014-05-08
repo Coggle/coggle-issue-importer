@@ -13,7 +13,13 @@ var ingester = require('./ingester');
 // get environment variables we need:
 var port                 = Number(process.env.PORT || 5000);
 var hostname             = process.env.HOSTNAME || 'localhost';
-var host                 = port !== 80? (hostname+':'+port) : hostname;
+var host                 = hostname;
+if(host.indexOf('herokuapp.com') !== -1){
+    // only include port in host if we're not running on heroku – the host
+    // needs to match the OAuth redirect URL, which doesn't include the port
+    // that heroku runs us on internally!
+    host                 = port !== 80? (hostname+':'+port) : hostname;
+}
 var protocol             = 'http';
 var coggle_client_id     = process.env.COGGLE_CLIENT_ID;
 var coggle_client_secret = process.env.COGGLE_CLIENT_SECRET;
