@@ -14,7 +14,7 @@ var ingester = require('./ingester');
 var port                 = Number(process.env.PORT || 5000);
 var hostname             = process.env.HOSTNAME || 'localhost';
 var host                 = hostname;
-if(host.indexOf('herokuapp.com') !== -1){
+if(host.indexOf('herokuapp.com') === -1){
     // only include port in host if we're not running on heroku – the host
     // needs to match the OAuth redirect URL, which doesn't include the port
     // that heroku runs us on internally!
