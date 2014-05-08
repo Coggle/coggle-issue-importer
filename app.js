@@ -99,7 +99,6 @@ passport.use(new CoggleStrategy({
 ));
 // Passport middleware to additionally authorize access to github on behalf of
 // the user
-console.log('github callback URL:', protocol+"://"+host+"/auth/github/callback");
 passport.use(new GitHubStrategy({
              clientID: github_client_id,
          clientSecret: github_client_secret,
@@ -150,7 +149,6 @@ app.get('/', function(req, res){
       });
     });
   }else{
-    console.log("user not logged in", req.session.access_tokens);
     // if we don't have all the access tokens yet, then just render without
     // doing any github requests
     res.render('index', {
@@ -192,7 +190,6 @@ app.post('/ingest/issues', function(req, res, next){
      access_tokens:req.session.access_tokens,
     full_repo_name:req.body.full_repo_name
   }, function(err, coggle_url){
-    console.log('ingest complete!', err, coggle_url);
     if(err)
       return res.send({error:true, details:err.message});
     else
