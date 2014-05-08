@@ -1,27 +1,35 @@
 /* nib utilities for stylus */
 @import 'nib'
 
-coggle-grey = #b4b4b4
 coggle-green = #9ed56b
 lightgrey = #f3f3f3
 lightblack = #2a2a2a
 white = #fefefe
+link-blue = #5bb7e3
 
 body
-  font-family 'Helvetica'
+  font-family 'Helvetica' Arial sans-serif
   color lightblack
   background-color lightgrey
   margin: 0
 
 header
   font-family 'Helvetica'
-  padding 50px 10px
+  padding 16px 8px
   margin 0
   color white
   text-shadow 0px 1px 19px darken(coggle-green, 40%)
   font-size 25px
   text-align center
   background linear-gradient(170deg, darken(coggle-green, 20%), coggle-green); 
+
+
+a
+  text-decoration none
+  color link-blue
+
+a:visited
+  color lighten(link-blue, 30%)
 
 .forkme
   position absolute
@@ -33,30 +41,113 @@ header
   height 149px
 
 .container
-  width 500px
+  width 540px
   margin 50px auto
   overflow hidden
 
 .main-content
   width 500px
+  background-color white
+  padding 20px 20px
+  border-radius 10px 10px
+  color lightblack
 
-  p
-    margin-bottom 20px
+p
+  margin 10px
+
+#error
+  color darken(red, 30%)
+  background-color lighten(red, 80%)
+  border-radius 6px
+#error div
+  padding 8px
 
 ul.ingestlist
+  padding 4px 12px 4px 12px
   list-style-type none
+
+  li 
+    padding 3px 8px 3px 8px
+    /*margin 4px
+    border-radius 6px
+    background-color lightgrey*/
+    font-size 18px
+    color darken(lightgrey, 30%)
+    overflow none
 
 .ingestitem
   cursor pointer
 
+.ingestitem:hover
+    color darken(lightgrey, 50%)
+
 .ingestinput
-  padding 4px
-  margin 0 40px 0 40px
+  padding 4px 8px 4px 8px
+  margin 8px 16px 8px 16px
+  border 1px solid lightgrey
+  border-radius 6px
+  box-shadow none
+  outline none
+  width  60%
+  font-size 16px
+
+.ingestinput:focus
+  border 1px solid darken(lightgrey, 30%)
+
+.created
+  font-size 20px
+  padding 20px 30px
+
+.logout
+  padding 0
+  margin 40px 4px 4px 4px
+  font-size 13px
 
 footer
   width 500px
   margin 50px auto
   background-color lightgrey
-  color coggle-grey
+  color darken(lightgrey, 30%)
   padding-top 5px
   font-size 13px
+
+
+.spinner
+  display inline-block
+  margin 0
+  width 70px
+  text-align center
+
+.spinner > div 
+  width 14px
+  height 14px
+  background-color coggle-green
+
+  border-radius 100%
+  display inline-block
+  animation bouncedelay 1.4s infinite ease-in-out
+  /* Prevent first frame from flickering when animation starts */
+  animation-fill-mode both
+
+.spinner .bounce1
+  -webkit-animation-delay -0.32s
+  animation-delay -0.32s
+
+
+.spinner .bounce2 
+  -webkit-animation-delay -0.16s
+  animation-delay -0.16s
+
+
+@-webkit-keyframes bouncedelay 
+  0%, 80%, 100% 
+    transform scale(0.0) 
+
+
+@keyframes bouncedelay 
+  0%, 80%, 100%  
+    transform scale(0.0)
+  40%  
+    transform scale(1.0)
+  
+

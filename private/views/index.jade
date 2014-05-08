@@ -5,11 +5,11 @@ block content
     | you can analyse them and plan work. 
   
   if !access_tokens || !access_tokens.coggle
-    div
+    p
       a(href="/auth/coggle") Authorize access to Coggle
 
   if !access_tokens || !access_tokens.github
-    div
+    p
       a(href="/auth/github") Authorize access to Github
   
   if error
@@ -18,6 +18,7 @@ block content
   if github_repos
     p Awesome, you've authorized access! Here are your github repositories:
     if github_repos.length
+      p#error
       ul.ingestlist
         each repo in github_repos
           li.ingestitem(fullname=repo.full_name)=repo.full_name
@@ -25,8 +26,9 @@ block content
       p Oh, looks like you don't have any repos of your own!
 
     p You can also enter the owner/name of a repository to import issues from
-    input.ingestinput(type=textarea) 
+    div
+      input.ingestinput(type=textarea) 
   
   if access_tokens
-    p
+    p.logout
       a(href="/auth/deauth") Logout.

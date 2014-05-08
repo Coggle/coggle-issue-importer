@@ -170,8 +170,16 @@ exports.ingest = function(options, callback){
   });
 
   github.issues.repoIssues({user:owner, repo:repo, state:'open', per_page:100}, function(err, issues){
-    if(err)
+    if(err){
+      // github errors are already errors...
+      try{
+        var gh_err = JSON.parse(err.message);
+        err = new Error(gh_err.message || gh_err);
+      }catch(e){
+      }
+      console.log('github error:', err.message);
       return callback(err);
+    }
     if(!issues.length)
       return callback(new Error("no issues found!"));
     

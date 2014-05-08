@@ -3,10 +3,16 @@
 
 $(document).ready(function(){
 
+  var spinner = '<div class="spinner"> <div class="bounce1"></div> <div class="bounce2"></div> <div class="bounce3"></div> </div>';
+
   function ingestIssuesForRepo(full_repo_name, replace_element_with_result){
     
     function fail(reason){
       console.log("fail:", reason);
+      $('#error').html(
+        $('<div>', {text:reason})
+      );
+      $(replace_element_with_result).find('.spinner').remove();
       $(replace_element_with_result).effect('shake');
     }
 
@@ -23,14 +29,16 @@ $(document).ready(function(){
         return fail(data.details);
       console.log("success:", data, textStatus);
       $(replace_element_with_result).replaceWith(
-        $('<div>', {html:'<a href="'+data.url+'">Coggle created</a>'})
+        $('<div>', {html:'<a href="'+data.url+'">Coggle created</a>'}).addClass('created')
       );
+      $('#error').html('');
     });
   }
 
   $('.ingestitem').on('click', function(){
     var full_repo_name = $(this).attr('fullname');
     console.log('item', full_repo_name , 'clicked');
+    $(this).append($(spinner));
     ingestIssuesForRepo(full_repo_name, this);
   });
   
@@ -39,7 +47,8 @@ $(document).ready(function(){
     if(e.keyCode == 13){
       // if enter was pressed
       e.preventDefault();
-      ingestIssuesForRepo($(this).val(), this);
+      $(this).parent().append($(spinner));
+      ingestIssuesForRepo($(this).val(), $(this).parent());
     }
   });
 });
