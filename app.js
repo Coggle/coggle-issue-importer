@@ -93,6 +93,7 @@ passport.use(new CoggleStrategy({
 ));
 // Passport middleware to additionally authorize access to github on behalf of
 // the user
+console.log('github callback URL:', protocol+"://"+host+"/auth/github/callback");
 passport.use(new GitHubStrategy({
              clientID: github_client_id,
          clientSecret: github_client_secret,
