@@ -37,7 +37,7 @@ github authorization is (as you'd expect) the domain followed by
 Both these pairs of IDs and secrets then need to be provided as environment
 variables when you run the app. If they are missing the app will refuse to
 start – but if they are incorrect you will only find out when you try to use
-the app!
+it!
 
 ```bash
 COGGLE_CLIENT_ID=aaaaaaaaaaaaaaaaaaaaaaaa \

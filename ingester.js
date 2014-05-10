@@ -9,7 +9,7 @@ function shortDate(){
 
 function xOffsetForChild(base_x_off, y_off, parent_height){
   // Calculate the x-offset necessary for a child with a
-  var Arc_Angle = 40 * Math.PI / 180;
+  var Arc_Angle = 60 * Math.PI / 180;
   var radius = parent_height / (2 * Math.sin(Arc_Angle/2));
   //
   //                                                         _
@@ -114,11 +114,11 @@ function fillCoggleWithIssues(diagram, all_issues, callback){
         var y_off = 0;
         if(label in left_labels){
           y_off = left_y_offset + h/2;
-          x_off = -xOffsetForChild(200, y_off, right_side_height);
+          x_off = -xOffsetForChild(300, y_off, right_side_height);
           left_y_offset += (h + label_yspace);
         }else{
           y_off = right_y_offset + h/2;
-          x_off = xOffsetForChild(200, y_off, right_side_height);
+          x_off = xOffsetForChild(300, y_off, right_side_height);
           right_y_offset += (h + label_yspace);
         }
         root_node.addChild(label, {x:x_off, y:y_off}, function(err, node){
@@ -145,7 +145,7 @@ function fillCoggleWithIssues(diagram, all_issues, callback){
               text += ' [#'+l.name+']('+'#'+l.name+')';
             });
             var y_off = label_offsets[primary_label.name];
-            var x_off = xOffsetForChild(150, y_off, label_sizes[primary_label.name]);
+            var x_off = xOffsetForChild(200, y_off, label_sizes[primary_label.name]);
             label_nodes[primary_label.name].addChild(
               text,
               {x: x_off, y: y_off},
