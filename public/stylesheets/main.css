@@ -52,6 +52,9 @@ a:visited {
 p {
   margin: 10px;
 }
+p.hint {
+  color: #aaa;
+}
 #error {
   color: #b30000;
   background-color: #fcc;
@@ -67,9 +70,6 @@ ul.ingestlist {
 }
 ul.ingestlist li {
   padding: 3px 8px 3px 8px;
-/*margin 4px
-    border-radius 6px
-    background-color lightgrey*/
   font-size: 18px;
   color: #aaa;
   overflow: none;

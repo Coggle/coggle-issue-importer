@@ -8,7 +8,37 @@ function shortDate(){
 }
 
 function xOffsetForChild(base_x_off, y_off, parent_height){
-  return base_x_off + (parent_height*0.2 / (1 + 3*(Math.abs(y_off)/(1+parent_height))));
+  // Calculate the x-offset necessary for a child with a
+  var Arc_Angle = 40 * Math.PI / 180;
+  var radius = parent_height / (2 * Math.sin(Arc_Angle/2));
+  //
+  //                                                         _
+  //                                                    _-"  | |
+  //                                               _-"       |   + - - - - -
+  //                                          _-"            |   ||        |
+  //                                     _-"                 |   | |       |
+  //                                _-"              parent  |   | |       |
+  //                           _-"                  height/2 |   |  |      |
+  //                      _-"                                |   |  |      | y_off
+  //                 _-"\                                    |   |   |     |
+  //            _-"       \                                  |   |   |     |
+  //       _-"             \                                 |   |   |     |
+  //  _-"     Arc_Angle/2   |                                |   |   |     |
+  // -----------------------|--------------------------------|---|---| - - -
+  // :                                                       : dx:   :
+  // :                                                       :   :   :
+  // :                  radius * Math.cos(Arc_Angle/2)       :   :   :
+  // |-------------------------------------------------------|   :   :
+  // :                                                           :   :
+  // :          sqrt(radius*radius - y_off*y_off/4)              :   :
+  // |-----------------------------------------------------------|   :
+  // :                                                               :
+  // :                             radius                            :
+  // |---------------------------------------------------------------|
+  //
+  var dx = Math.sqrt(radius*radius - y_off*y_off) - radius * Math.cos(Arc_Angle/2);
+  
+  return base_x_off + dx;
 }
 
 function fillCoggleWithIssues(diagram, all_issues, callback){

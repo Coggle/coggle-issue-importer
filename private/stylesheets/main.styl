@@ -6,6 +6,7 @@ lightgrey = #f3f3f3
 lightblack = #2a2a2a
 white = #fefefe
 link-blue = #5bb7e3
+midgrey = darken(lightgrey, 30%)
 
 body
   font-family 'Helvetica' Arial sans-serif
@@ -55,6 +56,9 @@ a:visited
 p
   margin 10px
 
+p.hint
+  color midgrey
+
 #error
   color darken(red, 30%)
   background-color lighten(red, 80%)
@@ -68,11 +72,8 @@ ul.ingestlist
 
   li 
     padding 3px 8px 3px 8px
-    /*margin 4px
-    border-radius 6px
-    background-color lightgrey*/
     font-size 18px
-    color darken(lightgrey, 30%)
+    color midgrey
     overflow none
 
 .ingestitem
@@ -92,7 +93,7 @@ ul.ingestlist
   font-size 16px
 
 .ingestinput:focus
-  border 1px solid darken(lightgrey, 30%)
+  border 1px solid midgrey
 
 .created
   color white
@@ -117,7 +118,7 @@ footer
   width 500px
   margin 50px auto
   background-color lightgrey
-  color darken(lightgrey, 30%)
+  color midgrey
   padding-top 5px
   font-size 13px
 
