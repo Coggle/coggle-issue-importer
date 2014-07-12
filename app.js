@@ -25,6 +25,7 @@ var coggle_client_id     = process.env.COGGLE_CLIENT_ID;
 var coggle_client_secret = process.env.COGGLE_CLIENT_SECRET;
 var github_client_id     = process.env.GITHUB_CLIENT_ID;
 var github_client_secret = process.env.GITHUB_CLIENT_SECRET;
+var analytics_token      = process.env.GOOGLE_ANALYTICS_TOKEN;
 
 var env_errors = [];
 
@@ -76,6 +77,9 @@ app.use(app.router);
 // Jade template engine, rendering content from ./private/views
 app.set('views', __dirname + '/private/views');
 app.set('view engine', 'jade');
+
+// Provide the analytics token to all render() calls:
+app.locals.analytics_token = analytics_token;
 
 // Passport middleware to authenticate Coggle users
 passport.use(new CoggleStrategy({
