@@ -2,7 +2,7 @@
 
 ### What is it?
 
-Coggle issue importer is a node.js demo application for the Coggle API that imports all the issues from a selected GitHub repository into a Coggle, grouped by their tags.
+Coggle issue importer is a node.js demo application for the Coggle API that imports all the issues from a selected GitHub repository into a [Coggle](http://coggle.it), grouped by their tags.
 
 The user is authenticated for both the Coggle API and the Github API using OAuth. The [passport-coggle-oauth2](https://github.com/coggle/passport-coggle-oauth2) module used to authorize users with Coggle, and retrieve an access token that can be sent along with requests to prove that your application is allowed to access a user's Coggles.
 
