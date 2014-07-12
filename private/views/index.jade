@@ -1,8 +1,12 @@
 extend layout
 block content
   p
-    | This is a demo application that imports github issues into Coggle, where
-    | you can analyse them and plan work. 
+    | This is a demo application that imports github issues into
+    | <a href="http://coggle.it">Coggle</a>, to easily view, analyse and plan!
+  
+  if !(access_tokens && access_tokens.coggle && access_tokens.github)
+    p
+      | To get started, grant access to your Github and Coggle accounts:
   
   if !access_tokens || !access_tokens.coggle
     p
@@ -16,7 +20,8 @@ block content
     p There was an error accessing your data: #{error}
 
   if github_repos
-    p Awesome, you've authorized access! Here are your github repositories:
+    p Awesome, you've authorized access! Here are your github repositories,
+      click one to create a Coggle from its open issues:
     if github_repos.length
       p#error
       ul.ingestlist
