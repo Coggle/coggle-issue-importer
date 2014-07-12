@@ -141,9 +141,9 @@ function fillCoggleWithIssues(diagram, all_issues, callback){
             if(other_labels.length){
               text += '\nalso tagged:';
             }
-            other_labels.forEach(function(l){
-              text += ' [#'+l.name+']('+'#'+l.name+')';
-            });
+            //other_labels.forEach(function(l){
+            //  text += ' [#'+l.name+']('+'#'+l.name+')';
+            //});
             var y_off = label_offsets[primary_label.name];
             var x_off = xOffsetForChild(200, y_off, label_sizes[primary_label.name]);
             label_nodes[primary_label.name].addChild(
