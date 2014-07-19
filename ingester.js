@@ -8,7 +8,7 @@ function shortDate(){
 }
 
 function xOffsetForChild(base_x_off, y_off, parent_height){
-  // Calculate the x-offset necessary for a child with a
+  // Calculate the x-offset necessary for a child with a given vertical offset
   var Arc_Angle = 60 * Math.PI / 180;
   var radius = parent_height / (2 * Math.sin(Arc_Angle/2));
   //
@@ -44,6 +44,8 @@ function xOffsetForChild(base_x_off, y_off, parent_height){
 function fillCoggleWithIssues(diagram, all_issues, callback){
   var used_label_counts = {};
   var primary_label_counts = {};
+  // count up how many issues we have for each label that issues have been
+  // tagged with. We pick a primary label for each issue:
   all_issues.forEach(function(issue){
     if(issue.labels.length){
       if(issue.labels[0].name in primary_label_counts)
@@ -100,7 +102,12 @@ function fillCoggleWithIssues(diagram, all_issues, callback){
     }
   }
 
+  // get the root node of the diagram in order to add child nodes to it: since
+  // we just created the diagram we know that the root node is the one and only
+  // node in it
   diagram.getNodes(function(err, nodes){
+    if(err)
+      return callback(err, diagram.webUrl());
     var root_node = nodes[0];
   
     var left_y_offset  = -left_side_height / 2;
@@ -185,7 +192,7 @@ exports.ingest = function(options, callback){
   var owner = repo_name[0];
   var repo  = repo_name[1];
 
-  // first get the data we need from github:
+  // first get the data we need from github: set up the GitHubApi module:
   var github = new GitHubApi({
     version: "3.0.0",
     timeout: 3000
@@ -195,17 +202,21 @@ exports.ingest = function(options, callback){
     token: access_tokens.github
   });
 
+  // handle for the Coggle API client (http://github.com/coggle/coggle-js)
   var coggle = new CoggleApi({
     token:access_tokens.coggle
   });
 
+  // Get all the open issues for the specified repository
   github.issues.repoIssues({user:owner, repo:repo, state:'open', per_page:100}, function(err, issues){
     if(err){
-      // github errors are already errors...
+      // convert all errors into a standard form:
       try{
         var gh_err = JSON.parse(err.message);
         err = new Error(gh_err.message || gh_err);
       }catch(e){
+        if(!err.message)
+          err.message = 'unknown github API error';
       }
       console.log('github error:', err.message);
       return callback(err);
@@ -213,6 +224,8 @@ exports.ingest = function(options, callback){
     if(!issues.length)
       return callback(new Error("no issues found!"));
     
+    // the response might be split across multiple pages, if it is request all
+    // the pages and build a list of all the issues
     var all_issues = [];
     function addReminingIssues(err, issues){
       if(err)
@@ -223,10 +236,10 @@ exports.ingest = function(options, callback){
       if(github.hasNextPage(issues)){
         github.getNextPage(issues, addReminingIssues);
       }else{
+        // if we've got all the issues, then import them into Coggle!
         createCoggleWithIssues(coggle, options.full_repo_name, all_issues, callback);
       }
     }
-
     addReminingIssues(err, issues);
   });
 };
