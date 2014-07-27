@@ -20,8 +20,10 @@ block content
     p There was an error accessing your data: #{error}
 
   if github_repos
-    p Awesome, you've authorized access! Here are your github repositories,
-      click one to create a Coggle from its open issues:
+    p
+      | Awesome, you've authorized access: Here are your github repositories,
+      | click one to create a Coggle from its open issues:
+
     if github_repos.length
       p#error
       ul.ingestlist
