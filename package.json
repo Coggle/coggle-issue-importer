@@ -33,7 +33,7 @@
     "passport-github": "*",
     "async": "*",
     "github": "*",
-    "coggle": "*"
+    "coggle": "^0.1.6"
   },
   "devDependencies": {
     "grunt": "*",
