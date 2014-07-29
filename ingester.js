@@ -9,8 +9,8 @@ function shortDate(){
 
 function xOffsetForChild(base_x_off, y_off, parent_height){
   // Calculate the x-offset necessary for a child with a given vertical offset
-  if(y_off < parent_height){
-      parent_height = y_off;
+  if(Math.abs(y_off) > Math.abs(parent_height)){
+      parent_height = (parent_height > 0) == (y_off > 0)? y_off : -y_off;
   }
   var Arc_Angle = 60 * Math.PI / 180;
   var radius = parent_height / (2 * Math.sin(Arc_Angle/2));
