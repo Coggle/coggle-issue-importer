@@ -70,7 +70,7 @@ $(document).ready(function(){
       ingestIssuesFor(
         repo_name
       ).fail(function(jqXHR, textStatus, errorThrown){
-        fail(details);
+        fail(textStatus);
       }).done(function(data, textStatus, jqXHR){
         if(data.error)
           return fail(data.details);
